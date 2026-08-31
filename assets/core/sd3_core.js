@@ -682,6 +682,23 @@ export class Decoder {
         }
         return AreaSpawnToggleV1.__wrap(ret[0]);
     }
+    /**
+     * Decodes the whole dialog store: every stored run in bank order, the
+     * 3,049 shared phrase records, and every named-entity string.
+     *
+     * Continuation references are handed over as references, not inlined.
+     * One phrase is commonly named from many runs, and flattening it here
+     * would both multiply the payload and lose the fact that they are the
+     * same stored object.
+     * @returns {TextStoreV1}
+     */
+    decode_text_store() {
+        const ret = wasm.decoder_decode_text_store(this.__wbg_ptr);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return TextStoreV1.__wrap(ret[0]);
+    }
     dispose() {
         wasm.decoder_dispose(this.__wbg_ptr);
     }
@@ -767,6 +784,21 @@ export class Decoder {
         }
         var v1 = getArrayU16FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
+        return v1;
+    }
+    /**
+     * Which `$C4:B300` category each entity-naming control resolves through,
+     * as pairs of control code and slot read out of each control's own load
+     * site. Two words per pair.
+     * @returns {Uint32Array}
+     */
+    text_control_slots() {
+        const ret = wasm.decoder_text_control_slots(this.__wbg_ptr);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
         return v1;
     }
 }
@@ -873,6 +905,245 @@ export class StaticBgMapStateV1 {
 if (Symbol.dispose) StaticBgMapStateV1.prototype[Symbol.dispose] = StaticBgMapStateV1.prototype.free;
 
 /**
+ * The decoded dialog store: stored runs, the shared phrase records they
+ * reference, and the strings a control code substitutes.
+ *
+ * Items are handed over as one flat array that every row indexes into, so
+ * the browser reads 117,000 codepoints without building an object each.
+ */
+export class TextStoreV1 {
+    static __wrap(ptr) {
+        const obj = Object.create(TextStoreV1.prototype);
+        obj.__wbg_ptr = ptr;
+        TextStoreV1Finalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        TextStoreV1Finalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_textstorev1_free(ptr, 0);
+    }
+    /**
+     * @returns {number}
+     */
+    block_count() {
+        const ret = wasm.textstorev1_block_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    block_row_words() {
+        const ret = wasm.textstorev1_block_row_words(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * Every stored block: bank, first and last bit within its region, the
+     * alignment padding before it, how many index entries name it, how many
+     * runs it stores, how many codepoints those hold, the opcode before its
+     * terminator - which is what says whether the block stored next is its
+     * branch arm or one of its table slots - and how this block itself can be
+     * entered. That opcode is `no_argument()` for a block with fewer than two
+     * instructions.
+     *
+     * The entry class is not derivable from the rest of the row: whether an
+     * unnamed block is a branch arm, a table slot or an orphan depends on the
+     * whole run of blocks before it, so it is decided per region and reported
+     * rather than left for a caller to re-derive from neighbouring rows. Nor
+     * is the opcode it was entered from: a table slot is entered from the
+     * block before the whole run of slots, which is not the row above it.
+     * @returns {Uint32Array}
+     */
+    block_rows() {
+        const ret = wasm.textstorev1_block_rows(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    continuation_flag() {
+        const ret = wasm.textstorev1_continuation_flag(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    event_row_words() {
+        const ret = wasm.textstorev1_event_row_words(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * Index entries that landed inside a block rather than on its first bit.
+     * A correct walk reports zero.
+     * @returns {number}
+     */
+    interior_entry_count() {
+        const ret = wasm.textstorev1_interior_entry_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * Every decoded item, indexed by the offset and count on each row.
+     * @returns {Uint32Array}
+     */
+    items() {
+        const ret = wasm.textstorev1_items(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    no_argument() {
+        const ret = wasm.textstorev1_no_argument(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    record_count() {
+        const ret = wasm.textstorev1_record_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    record_row_words() {
+        const ret = wasm.textstorev1_record_row_words(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {Uint32Array}
+     */
+    record_rows() {
+        const ret = wasm.textstorev1_record_rows(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    region_row_words() {
+        const ret = wasm.textstorev1_region_row_words(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * The four stored regions: bank, first byte, last byte, end of the `$FF`
+     * fill after it, and how many blocks it holds.
+     * @returns {Uint32Array}
+     */
+    region_rows() {
+        const ret = wasm.textstorev1_region_rows(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    run_count() {
+        const ret = wasm.textstorev1_run_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * One run as the renderer sees it: phrases inlined, controls paired with
+     * the codepoints that belong to them.
+     *
+     * Three words per event - kind, code, argument - where kind is 0 for a
+     * glyph, 1 for a control, 2 for a `$25` directive and 3 for a name the
+     * player typed, which lives in WRAM and is reported rather than
+     * substituted. An absent argument is `no_argument()`.
+     * @param {number} run
+     * @returns {Uint32Array}
+     */
+    run_events(run) {
+        const ret = wasm.textstorev1_run_events(this.__wbg_ptr, run);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    run_row_words() {
+        const ret = wasm.textstorev1_run_row_words(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {Uint32Array}
+     */
+    run_rows() {
+        const ret = wasm.textstorev1_run_rows(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    string_count() {
+        const ret = wasm.textstorev1_string_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    string_owner_total() {
+        const ret = wasm.textstorev1_string_owner_total(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    string_row_words() {
+        const ret = wasm.textstorev1_string_row_words(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {Uint32Array}
+     */
+    string_rows() {
+        const ret = wasm.textstorev1_string_rows(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * The merged byte extents the named-entity strings occupy, two words per
+     * span. An editor has to own these whole, because one string is commonly
+     * named from several places.
+     * @returns {Uint32Array}
+     */
+    string_spans() {
+        const ret = wasm.textstorev1_string_spans(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * Blocks whose stored bits no index entry names, which are reached only
+     * by falling through from the block before them.
+     * @returns {number}
+     */
+    unnamed_block_count() {
+        const ret = wasm.textstorev1_unnamed_block_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+}
+if (Symbol.dispose) TextStoreV1.prototype[Symbol.dispose] = TextStoreV1.prototype.free;
+
+/**
  * @returns {number}
  */
 export function production_rom_length() {
@@ -971,6 +1242,9 @@ const DecoderFinalization = (typeof FinalizationRegistry === 'undefined')
 const StaticBgMapStateV1Finalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_staticbgmapstatev1_free(ptr, 1));
+const TextStoreV1Finalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_textstorev1_free(ptr, 1));
 
 function getArrayJsValueFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
