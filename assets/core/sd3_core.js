@@ -174,6 +174,41 @@ export class AreaGatesV1 {
     /**
      * @returns {number}
      */
+    event_link_count() {
+        const ret = wasm.areagatesv1_event_link_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    event_link_row_words() {
+        const ret = wasm.areagatesv1_event_link_row_words(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * What each of this area's event gates can ask the transition directory
+     * for.
+     *
+     * `settled` marks the one shape a caller may present as a followable
+     * link: a request the script's own blocks make, and the only one they
+     * make. Everything else is a candidate - either the script asks for
+     * more than one transition, or the request is only reachable through a
+     * gosub or a jump, which story state decides.
+     *
+     * event index, settled, reached (0 own, 1 through a transfer), class
+     * (1 direct, 2 return), transition index, destination, presentation,
+     * spawn x, spawn y, spawn plane, spawn nudge, return handler.
+     * @returns {Uint32Array}
+     */
+    event_link_rows() {
+        const ret = wasm.areagatesv1_event_link_rows(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
     no_value() {
         const ret = wasm.areagatesv1_no_value(this.__wbg_ptr);
         return ret >>> 0;
