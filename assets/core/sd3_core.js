@@ -870,6 +870,44 @@ export class Decoder {
         return AreaCollisionV1.__wrap(ret[0]);
     }
     /**
+     * Decodes the packed dialog font and all eight palette ramps for the
+     * deterministic shade-0, brightness-2, mode-2 preview context.
+     * @returns {DialogPresentationV1}
+     */
+    decode_dialog_presentation() {
+        const ret = wasm.decoder_decode_dialog_presentation(this.__wbg_ptr);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return DialogPresentationV1.__wrap(ret[0]);
+    }
+    /**
+     * What each of these dialog scripts can say, and what picks between it.
+     *
+     * The script an actor's record names is usually not where its text is
+     * stored: a dialog is a two-level stream whose main level positions the
+     * speakers and then forks to a sub-stream that holds the words. The fork
+     * is an ordinary `$10`-`$1F` transfer, so the closure reaches it - but
+     * the sub-stream is a named index entry of its own and the text store
+     * labels its runs with that id. A caller joins the text store on the
+     * whole returned closure, never on the script id alone.
+     *
+     * One resolver per call, and only for the scripts the caller asked
+     * about: the trees and the index table are cheap to read and an area
+     * names a handful of dialogs at most.
+     * @param {Uint32Array} scripts
+     * @returns {DialogReachRowsV1}
+     */
+    decode_dialog_reach(scripts) {
+        const ptr0 = passArray32ToWasm0(scripts, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.decoder_decode_dialog_reach(this.__wbg_ptr, ptr0, len0);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return DialogReachRowsV1.__wrap(ret[0]);
+    }
+    /**
      * The area's transition surface: every scripted cell its layout carries,
      * resolved through C22DDE and C22941, and every ordinary directory entry
      * that names this area as a destination.
@@ -1249,6 +1287,243 @@ export class Decoder {
     }
 }
 if (Symbol.dispose) Decoder.prototype[Symbol.dispose] = Decoder.prototype.free;
+
+/**
+ * Font and deterministic palette resources for the software dialog
+ * compositor. Every getter returns owned decoded values: this object neither
+ * exposes nor retains a view of the cartridge bytes.
+ */
+export class DialogPresentationV1 {
+    static __wrap(ptr) {
+        const obj = Object.create(DialogPresentationV1.prototype);
+        obj.__wbg_ptr = ptr;
+        DialogPresentationV1Finalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        DialogPresentationV1Finalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_dialogpresentationv1_free(ptr, 0);
+    }
+    /**
+     * @returns {Uint16Array}
+     */
+    font_rows() {
+        const ret = wasm.dialogpresentationv1_font_rows(this.__wbg_ptr);
+        var v1 = getArrayU16FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
+        return v1;
+    }
+    /**
+     * @returns {Uint8Array}
+     */
+    frame_decoration() {
+        const ret = wasm.dialogpresentationv1_frame_decoration(this.__wbg_ptr);
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
+    }
+    /**
+     * @returns {Uint16Array}
+     */
+    frame_descriptors() {
+        const ret = wasm.dialogpresentationv1_frame_descriptors(this.__wbg_ptr);
+        var v1 = getArrayU16FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
+        return v1;
+    }
+    /**
+     * @returns {Uint8Array}
+     */
+    frame_patterns() {
+        const ret = wasm.dialogpresentationv1_frame_patterns(this.__wbg_ptr);
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
+    }
+    /**
+     * @returns {Uint16Array}
+     */
+    frame_row_structures() {
+        const ret = wasm.dialogpresentationv1_frame_row_structures(this.__wbg_ptr);
+        var v1 = getArrayU16FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    frame_row_words() {
+        const ret = wasm.dialogpresentationv1_frame_row_words(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {Uint8Array}
+     */
+    frame_styles() {
+        const ret = wasm.dialogpresentationv1_frame_styles(this.__wbg_ptr);
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
+    }
+    /**
+     * @returns {Uint16Array}
+     */
+    generated_palettes() {
+        const ret = wasm.dialogpresentationv1_generated_palettes(this.__wbg_ptr);
+        var v1 = getArrayU16FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    glyph_count() {
+        const ret = wasm.dialogpresentationv1_glyph_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    glyph_height() {
+        const ret = wasm.dialogpresentationv1_glyph_height(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    glyph_width() {
+        const ret = wasm.dialogpresentationv1_glyph_width(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    palette_colors() {
+        const ret = wasm.dialogpresentationv1_palette_colors(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    palette_count() {
+        const ret = wasm.dialogpresentationv1_palette_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    preview_brightness() {
+        const ret = wasm.dialogpresentationv1_preview_brightness(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @returns {number}
+     */
+    preview_mode() {
+        const ret = wasm.dialogpresentationv1_preview_mode(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @returns {number}
+     */
+    preview_shade() {
+        const ret = wasm.dialogpresentationv1_preview_shade(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @returns {Uint32Array}
+     */
+    rgba_palettes() {
+        const ret = wasm.dialogpresentationv1_rgba_palettes(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {Uint16Array}
+     */
+    source_palettes() {
+        const ret = wasm.dialogpresentationv1_source_palettes(this.__wbg_ptr);
+        var v1 = getArrayU16FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    version() {
+        const ret = wasm.dialogpresentationv1_version(this.__wbg_ptr);
+        return ret;
+    }
+}
+if (Symbol.dispose) DialogPresentationV1.prototype[Symbol.dispose] = DialogPresentationV1.prototype.free;
+
+export class DialogReachRowsV1 {
+    static __wrap(ptr) {
+        const obj = Object.create(DialogReachRowsV1.prototype);
+        obj.__wbg_ptr = ptr;
+        DialogReachRowsV1Finalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        DialogReachRowsV1Finalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_dialogreachrowsv1_free(ptr, 0);
+    }
+    /**
+     * @returns {number}
+     */
+    count() {
+        const ret = wasm.dialogreachrowsv1_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {Uint32Array}
+     */
+    decided_by() {
+        const ret = wasm.dialogreachrowsv1_decided_by(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    row_words() {
+        const ret = wasm.dialogreachrowsv1_row_words(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {Uint32Array}
+     */
+    rows() {
+        const ret = wasm.dialogreachrowsv1_rows(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {Uint32Array}
+     */
+    scripts() {
+        const ret = wasm.dialogreachrowsv1_scripts(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+}
+if (Symbol.dispose) DialogReachRowsV1.prototype[Symbol.dispose] = DialogReachRowsV1.prototype.free;
 
 /**
  * One multi-part boss's body: the constructor that builds it and the part
@@ -2075,6 +2350,24 @@ export class TextStoreV1 {
         return ret >>> 0;
     }
     /**
+     * @returns {Uint32Array}
+     */
+    block_entries() {
+        const ret = wasm.textstorev1_block_entries(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {Uint32Array}
+     */
+    block_producer_ids() {
+        const ret = wasm.textstorev1_block_producer_ids(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
      * @returns {number}
      */
     block_row_words() {
@@ -2152,6 +2445,19 @@ export class TextStoreV1 {
         return ret >>> 0;
     }
     /**
+     * @param {number} record
+     * @returns {Uint32Array}
+     */
+    record_events(record) {
+        const ret = wasm.textstorev1_record_events(this.__wbg_ptr, record);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
      * @returns {number}
      */
     record_row_words() {
@@ -2196,10 +2502,9 @@ export class TextStoreV1 {
      * One run as the renderer sees it: phrases inlined, controls paired with
      * the codepoints that belong to them.
      *
-     * Three words per event - kind, code, argument - where kind is 0 for a
-     * glyph, 1 for a control, 2 for a `$25` directive and 3 for a name the
-     * player typed, which lives in WRAM and is reported rather than
-     * substituted. An absent argument is `no_argument()`.
+     * Four words per typed semantic event. The browser maps the stable kind
+     * and variant values to discriminated objects; absent values use
+     * `no_argument()`.
      * @param {number} run
      * @returns {Uint32Array}
      */
@@ -2208,6 +2513,15 @@ export class TextStoreV1 {
         if (ret[3]) {
             throw takeFromExternrefTable0(ret[2]);
         }
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {Uint32Array}
+     */
+    run_producer_ids() {
+        const ret = wasm.textstorev1_run_producer_ids(this.__wbg_ptr);
         var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
         return v1;
@@ -2234,6 +2548,35 @@ export class TextStoreV1 {
     string_count() {
         const ret = wasm.textstorev1_string_count(this.__wbg_ptr);
         return ret >>> 0;
+    }
+    /**
+     * @param {number} string
+     * @returns {Uint32Array}
+     */
+    string_events(string) {
+        const ret = wasm.textstorev1_string_events(this.__wbg_ptr, string);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {number}
+     */
+    string_owner_row_words() {
+        const ret = wasm.textstorev1_string_owner_row_words(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {Uint32Array}
+     */
+    string_owner_rows() {
+        const ret = wasm.textstorev1_string_owner_rows(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
     }
     /**
      * @returns {number}
@@ -2381,6 +2724,12 @@ const AreaSpawnToggleV1Finalization = (typeof FinalizationRegistry === 'undefine
 const DecoderFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_decoder_free(ptr, 1));
+const DialogPresentationV1Finalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_dialogpresentationv1_free(ptr, 1));
+const DialogReachRowsV1Finalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_dialogreachrowsv1_free(ptr, 1));
 const EntityBossV1Finalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_entitybossv1_free(ptr, 1));
@@ -2463,6 +2812,13 @@ function getUint8ArrayMemory0() {
         cachedUint8ArrayMemory0 = new Uint8Array(wasm.memory.buffer);
     }
     return cachedUint8ArrayMemory0;
+}
+
+function passArray32ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 4, 4) >>> 0;
+    getUint32ArrayMemory0().set(arg, ptr / 4);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
 }
 
 function passArray8ToWasm0(arg, malloc) {
